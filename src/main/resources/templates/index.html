@@ -24,9 +24,9 @@
                 <input type="text" class="form-control mb-4" placeholder="Email" name="email" required>
                 <input type="text" class="form-control mb-4" placeholder="Phone Number" name="phone" required>
                 <input type="text" class="form-control mb-4" placeholder="Location" name="location" required>
-                <input type="text" class="form-control mb-4" placeholder="LinkedIn" name="linkedin" required>
-                <input type="text" class="form-control mb-4" placeholder="GitHub" name="github" required>
-                <input type="text" class="form-control mb-4" placeholder="Website" name="website" required>
+                <input type="text" class="form-control mb-4" placeholder="LinkedIn" name="linkedin">
+                <input type="text" class="form-control mb-4" placeholder="GitHub" name="github">
+                <input type="text" class="form-control mb-4" placeholder="Website" name="website">
             </div>
 
             <div class="d-block p-2 bg-warning text-black mb-3 mt-3">
@@ -37,28 +37,18 @@
                 Education
             </div>
             <div id="education-container">
-                <div class="pt-3 d-grid gap-3 education-entry">
-                    <!-- Education Info Input -->
-                    <div class="fs-2 fw-bold">Education</div>
-                    <input type="text" class="form-control mb-4" placeholder="Degree" data-field="degree" name="educationList[0].degree" required>
-                    <input type="text" class="form-control mb-4" placeholder="Program" data-field="program" name="educationList[0].program" required>
-                    <input type="text" class="form-control mb-4" placeholder="Institution Name" data-field="institution_name" name="educationList[0].institution_name" required>
-                    <input type="text" class="form-control mb-4" placeholder="Start Time" data-field="start_time" name="educationList[0].start_time" required>
-                    <input type="text" class="form-control mb-4" placeholder="End Time/Current" data-field="end_time" name="educationList[0].end_time" required>
-                    <input type="text" class="form-control mb-4" placeholder="Location" data-field="school_location" name="educationList[0].school_location" required>
-                    <input type="text" class="form-control mb-4" placeholder="GPA (not required)" data-field="gpa" name="educationList[0].gpa">
-
-                    <!-- Awards -->
-                    <div class="fs-4 fw-bold">Award(s)</div>
+                <div class="pt-3 d-grid gap-3 education-entry d-none" id="education-template">
+                    <input type="text" class="form-control" data-field="degree" placeholder="Degree and Program">
+                    <input type="text" class="form-control" data-field="institution_name" placeholder="School">
+                    <input type="text" class="form-control" data-field="start_time" placeholder="Start Date">
+                    <input type="text" class="form-control" data-field="end_time" placeholder="End Date">
+                    <input type="text" class="form-control" data-field="school_location" placeholder="Location">
+                    <input type="text" class="form-control" data-field="gpa" placeholder="GPA (not required)">
                     <div class="awards-container"></div>
-                    <button type="button" class="btn btn-outline-secondary mb-3" onclick="addAward(this)">Add Award</button>
-
-                    <!-- Relevant Courses -->
-                    <div class="fs-4 fw-bold">Relevant Course(s)</div>
                     <div class="courses-container"></div>
-                    <button type="button" class="btn btn-outline-secondary mb-3" onclick="addCourse(this)">Add Course</button>
-
-                    <button type="button" class="btn btn-outline-danger delete-education-btn mb-2">Delete This Education</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="addAward(this)">Add Award</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="addCourse(this)">Add Course</button>
+                    <button type="button" class="btn btn-outline-danger delete-education-btn mb-3">Delete</button>
                 </div>
             </div>
             <div class="d-grid gap-2 mb-2">
@@ -74,17 +64,29 @@
                 Extracurricular & Leadership
             </div>
             <div id="experience-container">
-                <div class="pt-3 d-grid gap-3 experience-entry">
-                    <div class="fs-2 fw-bold">Experience</div>
-                    <input type="text" class="form-control mb-4" placeholder="Title" data-field="title" name="experienceList[0].title" required>
-                    <input type="text" class="form-control mb-4" placeholder="Employer/Company" data-field="company" name="experienceList[0].company" required>
-                    <input type="text" class="form-control mb-4" placeholder="Start Time" data-field="start" name="experienceList[0].start" required>
-                    <input type="text" class="form-control mb-4" placeholder="End Time/Current" data-field="end" name="experienceList[0].end" required>
-                    <input type="text" class="form-control mb-4" placeholder="Location" data-field="location" name="experienceList[0].location" required>
-                    <div class="fs-4 fw-bold">Detail(s)</div>
+                <div class="pt-3 d-grid gap-3 experience-entry d-none" id="experience-template">
+                    <input type="text" class="form-control" data-field="title" placeholder="Title">
+                    <input type="text" class="form-control" data-field="company" placeholder="Company/Employer">
+                    <input type="text" class="form-control" data-field="start" placeholder="Start">
+                    <input type="text" class="form-control" data-field="end" placeholder="End">
+                    <input type="text" class="form-control" data-field="location" placeholder="Location">
                     <div class="detail-container"></div>
-                    <button type="button" class="btn btn-outline-secondary mb-3" onclick="addDetail(this)">Add Detail</button>
-                    <button type="button" class="btn btn-outline-danger delete-experience-btn mb-2">Delete This Experience</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="addDetail(this)">Add Detail</button>
+                    <button type="button" class="btn btn-outline-danger delete-experience-btn mb-3">Delete</button>
+                </div>
+                <!-- Render experiences if present -->
+                <div th:each="experience : ${experienceList}">
+                    <h5 th:text="${experience.title}"></h5>
+                    <div>
+                        <span th:text="${experience.company}"></span>
+                        <span th:text="${experience.start}"></span> - <span th:text="${experience.end}"></span>
+                        <span th:text="${experience.location}"></span>
+                    </div>
+                    <ul class="mt-2" th:if="${experience.details != null and !experience.details.isEmpty()}">
+                      <li th:each="detail : ${experience.details}">
+                        <span contenteditable="true" th:text="${detail}"></span>
+                      </li>
+                    </ul>
                 </div>
             </div>
             <div class="d-grid gap-2 mb-2">
@@ -98,14 +100,6 @@
                 </svg>
                 Certification
             </div>
-            <input type="hidden" name="name" th:value="${name}">
-            <input type="hidden" name="title" th:value="${title}">
-            <input type="hidden" name="email" th:value="${email}">
-            <input type="hidden" name="phone" th:value="${phone}">
-            <input type="hidden" name="location" th:value="${location}">
-            <input type="hidden" name="linkedin" th:value="${linkedin}">
-            <input type="hidden" name="github" th:value="${github}">
-            <input type="hidden" name="website" th:value="${website}">
             <div id="certification-container">
                 <div class="pt-3 d-grid gap-3 certification-entry">
                     <div class="input-group mb-2"></div>
@@ -123,16 +117,27 @@
                 Project
             </div>
             <div id="project-container">
-                <div class="pt-3 d-grid gap-3 experience-entry">
-                    <div class="fs-2 fw-bold">Project</div>
-                    <input type="text" class="form-control mb-4" placeholder="Project Name" data-field="name" name="projectList[0].name" required>
-                    <input type="text" class="form-control mb-4" placeholder="Organization/Club" data-field="creator" name="projectList[0].creator" required>
-                    <input type="text" class="form-control mb-4" placeholder="Start Time" data-field="start" name="projectList[0].start" required>
-                    <input type="text" class="form-control mb-4" placeholder="End Time/Current" data-field="end" name="projectList[0].end" required>
-                    <div class="fs-4 fw-bold">Detail(s)</div>
+                <div class="pt-3 d-grid gap-3 experience-entry d-none" id="project-template">
+                    <input type="text" class="form-control" data-field="name" placeholder="Project Name">
+                    <input type="text" class="form-control" data-field="creator" placeholder="Organization/Creator">
+                    <input type="text" class="form-control" data-field="start" placeholder="Start">
+                    <input type="text" class="form-control" data-field="end" placeholder="End">
                     <div class="detail-container"></div>
-                    <button type="button" class="btn btn-outline-secondary mb-3" onclick="addDetail(this)">Add Detail</button>
-                    <button type="button" class="btn btn-outline-danger delete-experience-btn mb-2">Delete This Project</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="addDetail(this)">Add Detail</button>
+                    <button type="button" class="btn btn-outline-danger delete-experience-btn mb-3">Delete</button>
+                </div>
+                <!-- Render projects if present -->
+                <div th:each="project : ${projectList}">
+                    <h5 th:text="${project.name}"></h5>
+                    <div>
+                        <span th:text="${project.creator}"></span>
+                        <span th:text="${project.start}"></span> - <span th:text="${project.end}"></span>
+                    </div>
+                    <ul class="mt-2" th:if="${project.details != null and !project.details.isEmpty()}">
+                      <li th:each="detail : ${project.details}">
+                        <span contenteditable="true" th:text="${detail}"></span>
+                      </li>
+                    </ul>
                 </div>
             </div>
             <div class="d-grid gap-2 mb-2">
@@ -166,12 +171,14 @@ function setupDeleteButtons(context) {
 
 function addEducation() {
     const container = document.getElementById('education-container');
-    const first = container.querySelector('.education-entry');
-    const clone = first.cloneNode(true);
+    const template = document.getElementById('education-template');
+    const clone = template.cloneNode(true);
+    clone.classList.remove('d-none');
+    clone.removeAttribute('id');
 
     clone.querySelectorAll('input').forEach(input => input.value = '');
 
-    const index = container.querySelectorAll('.education-entry').length;
+    const index = container.querySelectorAll('.education-entry:not(.d-none)').length;
     clone.querySelectorAll('input').forEach(input => {
         const field = input.getAttribute('data-field');
         if (field) {
@@ -187,14 +194,14 @@ function addEducation() {
 
 function addAward(btn) {
     const entry = btn.closest('.education-entry');
-    const index = Array.from(document.querySelectorAll('.education-entry')).indexOf(entry);
+    const index = Array.from(document.querySelectorAll('.education-entry:not(.d-none)')).indexOf(entry);
     const container = entry.querySelector('.awards-container');
     const wrapper = document.createElement('div');
     wrapper.className = 'input-group mb-2';
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.name = `educationList[${index}].awards`;
+    input.name = `educationList[${index}].awards[${container.children.length}]`;
     input.className = 'form-control';
     input.placeholder = 'Award Name';
 
@@ -211,14 +218,14 @@ function addAward(btn) {
 
 function addCourse(btn) {
     const entry = btn.closest('.education-entry');
-    const index = Array.from(document.querySelectorAll('.education-entry')).indexOf(entry);
+    const index = Array.from(document.querySelectorAll('.education-entry:not(.d-none)')).indexOf(entry);
     const container = entry.querySelector('.courses-container');
     const wrapper = document.createElement('div');
     wrapper.className = 'input-group mb-2';
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.name = `educationList[${index}].relevantCourses`;
+    input.name = `educationList[${index}].relevantCourses[${container.children.length}]`;
     input.className = 'form-control';
     input.placeholder = 'Relevant Course';
 
@@ -257,12 +264,16 @@ function addCertification() {
 
 function addExperience() {
     const container = document.getElementById('experience-container');
-    const first = container.querySelector('.experience-entry');
-    const clone = first.cloneNode(true);
+    const template = document.getElementById('experience-template');
+    const clone = template.cloneNode(true);
+    clone.classList.remove('d-none');
+    clone.removeAttribute('id');
 
     clone.querySelectorAll('input').forEach(input => input.value = '');
 
-    const index = container.querySelectorAll('.experience-entry').length;
+    // Correct index calculation (remove -1)
+    const index = container.querySelectorAll('.experience-entry:not(.d-none)').length;
+    clone.setAttribute('data-index', index);
     clone.querySelectorAll('input').forEach(input => {
         const field = input.getAttribute('data-field');
         if (field) {
@@ -277,12 +288,16 @@ function addExperience() {
 
 function addProject() {
     const container = document.getElementById('project-container');
-    const first = container.querySelector('.experience-entry');
-    const clone = first.cloneNode(true);
+    const template = document.getElementById('project-template');
+    const clone = template.cloneNode(true);
+    clone.classList.remove('d-none');
+    clone.removeAttribute('id');
 
     clone.querySelectorAll('input').forEach(input => input.value = '');
 
-    const index = container.querySelectorAll('.experience-entry').length;
+    // Correct index calculation (remove -1)
+    const index = container.querySelectorAll('#project-container .experience-entry:not(.d-none)').length;
+    clone.setAttribute('data-index', index);
     clone.querySelectorAll('input').forEach(input => {
         const field = input.getAttribute('data-field');
         if (field) {
@@ -302,14 +317,14 @@ function addDetail(button) {
     const containerList = isProject
         ? document.querySelectorAll('#project-container .experience-entry')
         : document.querySelectorAll('#experience-container .experience-entry');
-    const index = Array.from(containerList).indexOf(entry);
+    const index = entry.getAttribute('data-index');
     const container = entry.querySelector('.detail-container');
     const wrapper = document.createElement('div');
     wrapper.className = 'input-group mb-2';
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.name = `${isProject ? 'projectList' : 'experienceList'}[${index}].details`;
+    input.name = `${isProject ? 'projectList' : 'experienceList'}[${index}].details[${container.children.length}]`;
     input.className = 'form-control';
     input.placeholder = 'Describe your achievement or responsibility';
 

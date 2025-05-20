@@ -9,7 +9,7 @@ public class Experience {
     private String end;
     private String location;
 
-    private List<String> details;
+    public List<String> details;
 
     public List<String> getDetails() {
         return details;

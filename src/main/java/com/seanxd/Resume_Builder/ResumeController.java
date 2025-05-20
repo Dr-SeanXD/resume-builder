@@ -79,54 +79,73 @@ public class ResumeController {
             exp.setLocation(expLocation);
 
             List<String> details = new java.util.ArrayList<>();
-            for (Map.Entry<String, List<String>> entry : allParams.entrySet()) {
-                if (entry.getKey().startsWith("experienceList[" + i + "].details")) {
-                    details.addAll(entry.getValue());
-                }
+            int detailIndex = 0;
+            while (true) {
+                String key = "experienceList[" + i + "].details[" + detailIndex + "]";
+                List<String> values = allParams.get(key);
+                if (values == null) break;
+                details.addAll(values);
+                detailIndex++;
             }
             exp.setDetails(details);
             experienceList.add(exp);
         }
         model.addAttribute("experienceList", experienceList);
 
+        System.out.println("---- Submitted Params ----");
+        allParams.forEach((k, v) -> System.out.println(k + ": " + v));
+
+
         // Reconstruct structured educationList
         List<Education> educationList = new java.util.ArrayList<>();
         for (int i = 0; ; i++) {
             String degree = allParams.getFirst("educationList[" + i + "].degree");
-            String program = allParams.getFirst("educationList[" + i + "].program");
             String institution_name = allParams.getFirst("educationList[" + i + "].institution_name");
             String start = allParams.getFirst("educationList[" + i + "].start_time");
             String end = allParams.getFirst("educationList[" + i + "].end_time");
             String school_location = allParams.getFirst("educationList[" + i + "].school_location");
             String gpa = allParams.getFirst("educationList[" + i + "].gpa");
 
-            if (degree == null && program == null && institution_name == null && start == null && end == null
+            if (degree == null && institution_name == null && start == null && end == null
                 && school_location == null) break;
 
             Education edu = new Education();
             edu.setDegree(degree);
-            edu.setProgram(program);
             edu.setInstitution_name(institution_name);
             edu.setStart_time(start);
             edu.setEnd_time(end);
             edu.setSchool_location(school_location);
             edu.setGpa(gpa);
 
-            List<String> awards = new java.util.ArrayList<>();
-            List<String> courses = new java.util.ArrayList<>();
 
-            for (Map.Entry<String, List<String>> entry : allParams.entrySet()) {
-                if (entry.getKey().startsWith("educationList[" + i + "].awards")) {
-                    awards.addAll(entry.getValue());
-                }
-                if (entry.getKey().startsWith("educationList[" + i + "].relevantCourses")) {
-                    courses.addAll(entry.getValue());
-                }
+            // Collect awards
+            List<String> awards = new ArrayList<>();
+            int awardIndex = 0;
+            while (true) {
+                String key = "educationList[" + i + "].awards[" + awardIndex + "]";
+                List<String> values = allParams.get(key);
+                if (values == null) break;
+                awards.addAll(values);
+                awardIndex++;
+            }
+
+            // Collect relevantCourses
+            List<String> courses = new ArrayList<>();
+            int courseIndex = 0;
+            while (true) {
+                String key = "educationList[" + i + "].relevantCourses[" + courseIndex + "]";
+                List<String> values = allParams.get(key);
+                if (values == null) break;
+                courses.addAll(values);
+                courseIndex++;
             }
 
             edu.setAwards(awards);
             edu.setRelevantCourses(courses);
             educationList.add(edu);
+
+            System.out.println("Awards: " + awards);
+            System.out.println("Courses: " + courses);
         }
         model.addAttribute("educationList", educationList);
 
@@ -147,10 +166,13 @@ public class ResumeController {
             proj.setEnd(end);
 
             List<String> details = new java.util.ArrayList<>();
-            for (Map.Entry<String, List<String>> entry : allParams.entrySet()) {
-                if (entry.getKey().contains("projectList[" + i + "].details")) {
-                    details.addAll(entry.getValue());
-                }
+            int detailIndex = 0;
+            while (true) {
+                String key = "projectList[" + i + "].details[" + detailIndex + "]";
+                List<String> values = allParams.get(key);
+                if (values == null) break;
+                details.addAll(values);
+                detailIndex++;
             }
 
             proj.setDetails(details);

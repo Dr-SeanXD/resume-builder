@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Education {
     private String degree;
-    private String program;
     private String institution_name;
     private String start_time;
     private String end_time;
@@ -13,10 +12,6 @@ public class Education {
 
     public void setDegree(String degree) {
         this.degree = degree;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
     }
 
     public void setInstitution_name(String institution_name) {
@@ -47,15 +42,11 @@ public class Education {
         this.relevantCourses = relevantCourses;
     }
 
-    private List<String> awards;
-    private List<String> relevantCourses;
+    public List<String> awards;
+    public List<String> relevantCourses;
 
     public String getDegree() {
         return degree;
-    }
-
-    public String getProgram() {
-        return program;
     }
 
     public String getInstitution_name() {

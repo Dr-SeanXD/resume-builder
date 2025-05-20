@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.seanxd</groupId>
 	<artifactId>Resume_Builder</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>Rêsume Builder</name>
 	<description>Building a Résume</description>
 	<url/>

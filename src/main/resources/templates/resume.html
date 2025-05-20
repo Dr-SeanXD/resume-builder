@@ -5,30 +5,67 @@
     <title>Resume</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Montserrat', sans-serif;
+            background: #fff;
+            color: #222;
+        }
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: auto;
+            padding: 5px;
+            background: white;
         }
         .text-red-800 {
-            color: #991b1b;
+            color: #a72828 !important;
+        }
+        ul, ol {
+            margin-bottom: 0.3rem;
+        }
+        /* Removed custom SVG icon color styling to restore original appearance */
+        @media print {
+            body {
+                background: none;
+                box-shadow: none;
+                font-size: 11px;
+                line-height: 1.25;
+            }
+            .a4-page {
+                width: 100%;
+                padding: 10mm;
+            }
+            .a4-page * {
+                page-break-inside: avoid;
+            }
+            #editor-toolbar,
+            .btn-success,
+            .download-toolbar {
+                display: none !important;
+            }
+        }
+        [contenteditable]:focus {
+            outline: 2px dashed #0066cc;
+            background-color: #f0f8ff;
         }
     </style>
 </head>
 <body>
-<div class="container-fluid pt-3">
-    <!-- Name -->
-    <div class="fs-1 text-uppercase fw-bold">
-        <span th:text="${name}"></span>
+<div class="a4-page mx-auto">
+<div class="container-fluid pt-3" style="line-height: 1.5;">
+    <!-- Header Name -->
+    <div class="fs-1 text-uppercase fw-bold mb-1">
+        <span th:text="${name}" contenteditable="true"></span>
+    </div>
+    <!-- Header Title -->
+    <div class="fs-3 text-capitalize fw-bold text-red-800 mb-2">
+        <span th:text="${title}" contenteditable="true"></span>
     </div>
 
-    <!-- Title -->
-    <div class="fs-3 text-capitalize fw-bold text-red-800">
-        <span th:text="${title}"></span>
-    </div>
-
-    <!-- Other Info -->
-    <div style="grid-template-columns: 1fr 1fr 1fr;" class="d-grid gap-3 pt-3">
+    <!-- Contact Info -->
+    <div style="grid-template-columns: 1fr 1fr 1fr;" class="d-grid gap-3 mb-3">
         <!-- Email -->
         <div th:if="${email}" class="d-block">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
@@ -50,7 +87,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
                 <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
             </svg>
-            <span th:text="${location}"></span>
+            <span th:text="${location}" contenteditable="true"></span>
         </div>
 
         <!-- LinkedIn -->
@@ -78,119 +115,143 @@
         </div>
     </div>
 
-    <div style="grid-template-columns: 2fr 1fr;" class="d-grid gap-3 pt-3">
-        <div class="pt-4">
-
-            <div class="fs-2 fw-bold border-bottom border-2">
-                EXTRACURRICULAR & LEADERSHIP
-            </div>
-
-            <div th:each="experience : ${experienceList}" class="mb-4">
-                <div class="fs-3 fw-bold" th:text="${experience.getTitle()}"></div>
-                <div class="fs-4 text-capitalize fw-bold text-red-800">
-                    <span th:text="${experience.getCompany()}"></span>
-                </div>
-                <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3 pt-3">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
-                            <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
-                        </svg>
-                        <span th:text="${experience.start} + ' ~ ' + ${experience.end}"></span>
+    <div class="d-flex gap-5" style="line-height: 1.375;">
+        <!-- Left Column: Experience & Project -->
+        <div style="flex: 1.35;">
+            <div th:if="${experienceList != null and !experienceList.isEmpty()}" class="mb-4">
+                <div class="fs-4 text-uppercase fw-bold border-bottom border-2 mb-2">EXPERIENCE</div>
+                <div th:each="experience : ${experienceList}" class="mb-3">
+                    <div class="fs-6 mb-2" th:text="${experience.title}" contenteditable="true"></div>
+                    <div class="fs-6 fw-semibold text-red-800 mb-2" th:text="${experience.company}" contenteditable="true"></div>
+                    <div class="d-flex gap-4 mb-2 align-items-center">
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16" style="width:14px;height:14px;margin-right:0.25em;"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/></svg>
+                            <span th:text="${experience.start} + ' ~ ' + ${experience.end}"></span>
+                        </span>
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16" style="width:14px;height:14px;margin-right:0.25em;"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></svg>
+                            <span th:text="${experience.location}" contenteditable="true"></span>
+                        </span>
                     </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
-                        </svg>
-                        <span th:text="${experience.getLocation()}"></span>
+                    <ul class="mb-1 ps-3 lh-base" th:if="${experience.details != null and !experience.details.isEmpty()}">
+                        <li th:each="detail : ${experience.details}"><span contenteditable="true" th:text="${detail}"></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${projectList != null and !projectList.isEmpty()}" class="mb-4">
+                <div class="fs-4 text-uppercase fw-bold border-bottom border-2 mb-2">PROJECT</div>
+                <div th:each="project : ${projectList}" class="mb-3">
+                    <div class="fs-6 mb-2" th:text="${project.name}" contenteditable="true"></div>
+                    <div class="fs-6 fw-semibold text-red-800 mb-2" th:text="${project.creator}" contenteditable="true"></div>
+                    <div class="d-flex gap-4 mb-2 align-items-center">
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16" style="width:14px;height:14px;margin-right:0.25em;"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/></svg>
+                            <span th:text="${project.start} + ' ~ ' + ${project.end}"></span>
+                        </span>
                     </div>
+                    <ul class="mb-1 ps-3 lh-base" th:if="${project.details != null and !project.details.isEmpty()}">
+                        <li th:each="detail : ${project.details}"><span contenteditable="true" th:text="${detail}"></span></li>
+                    </ul>
                 </div>
-                <ul class="mt-2">
-                    <li th:each="detail : ${experience.getDetails()}" th:text="${detail}"></li>
-                </ul>
-            </div>
-
-            <div class="fs-2 fw-bold border-bottom border-2">
-                PROJECT
-            </div>
-            <div th:each="project : ${projectList}" class="mb-4">
-                <div class="fs-3 fw-bold" th:text="${project.getName()}"></div>
-                <div class="fs-4 text-capitalize fw-bold text-red-800">
-                    <span th:text="${project.getCreator()}"></span>
-                </div>
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
-                        <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
-                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
-                    </svg>
-                    <span th:text="${project.start} + ' ~ ' + ${project.end}"></span>
-                </div>
-                <ul class="mt-2">
-                    <li th:each="detail : ${project.details}" th:text="${detail}"></li>
-                </ul>
             </div>
         </div>
-
-        <div class="pt-4">
-            <div class="fs-2 fw-bold border-bottom border-2">
-                EDUCATION
+        <!-- Right Column: Education, Certifications, Skills -->
+        <div style="flex: 1;">
+            <div th:if="${educationList != null and !educationList.isEmpty()}" class="mb-4">
+                <div class="fs-4 text-uppercase fw-bold border-bottom border-2 mb-2">EDUCATION</div>
+                <div th:each="education : ${educationList}" class="mb-3">
+                    <div class="fs-6 mb-2" th:text="${education.degree}" contenteditable="true"></div>
+                    <div class="fs-6 fw-semibold text-red-800 mb-2" th:text="${education.institution_name}" contenteditable="true"></div>
+                    <div>
+                        <div class="d-flex flex-column gap-1 mb-1">
+                            <span class="mb-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16" style="width:14px;height:14px;margin-right:0.25em;"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/></svg>
+                                <span th:text="${education.start_time} + ' ~ ' + ${education.end_time}"></span>
+                            </span>
+                            <span class="mb-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-geo-alt-fill"
+                                     viewBox="0 0 16 16" style="width:14px;height:14px;margin-right:0.25em;"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></svg>
+                                <span th:text="${education.school_location}" contenteditable="true"></span>
+                            </span>
+                            <div th:if="${education.gpa != null and !#strings.isEmpty(education.gpa)}" style="margin-bottom:0.12rem;" class="mb-1">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16" style="width:14px;height:14px;margin-right:0.25em;"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z"/></svg>
+                                    <span th:text="${education.gpa}" contenteditable="true"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${education.awards != null and !education.awards.isEmpty()}" class="fw-bold mt-1 mb-1">Awards</div>
+                    <ul class="mb-1 ps-3 lh-base" th:if="${education.awards != null and !education.awards.isEmpty()}">
+                        <li th:each="award : ${education.awards}">
+                            <span contenteditable="true" th:text="${award}"></span>
+                        </li>
+                    </ul>
+                    <div th:if="${education.relevantCourses != null and !education.relevantCourses.isEmpty()}" class="fw-bold mt-2 mb-1">Relevant Courses</div>
+                    <ul class="mb-1 ps-3 lh-base" th:if="${education.relevantCourses != null and !education.relevantCourses.isEmpty()}">
+                        <li th:each="rc : ${education.relevantCourses}">
+                            <span contenteditable="true" th:text="${rc}"></span>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div th:each="education : ${educationList}" class="mb-4">
-                <div class="fs-3" th:text="${education.getDegree()}"></div>
-                <div class="fs-3" th:text="${education.getProgram()}"></div>
-                <div class="fs-4 text-capitalize fw-bold text-red-800">
-                    <span th:text="${education.getInstitution_name()}"></span>
-                </div>
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
-                        <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
-                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
-                    </svg>
-                    <span th:text="${education.getStart_time()} + ' ~ ' + ${education.getEnd_time()}"></span>
-                </div>
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
-                    </svg>
-                    <span th:text="${education.getSchool_location()}"></span>
-                </div>
-                <div th:if="${education.gpa != null and !#strings.isEmpty(education.gpa)}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
-                        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z"/>
-                        <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z"/>
-                    </svg>
-                    <span th:text="${education.gpa}"></span>
-                </div>
-                <div th:if="${education.getAwards() != null and #lists.size(education.getAwards()) > 0}"
-                     class="fs-5">Awards</div>
-                <ul class="mt-2" th:if="${education.getAwards() != null and #lists.size(education.getAwards()) > 0}">
-                    <li th:each="award : ${education.getAwards()}" th:text="${award}"></li>
-                </ul>
-                <div th:if="${education.getRelevantCourses() != null and #lists.size(education.getRelevantCourses()) > 0}"
-                     class="fs-5">Relevant Courses</div>
-                <ul class="mt-2" th:if="${education.getRelevantCourses() != null and #lists.size(education.getRelevantCourses()) > 0}">
-                    <li th:each="rc : ${education.getRelevantCourses()}" th:text="${rc}"></li>
-                </ul>
-            </div>
-            <div th:if="${certifications != null and #lists.size(certifications) > 0}">
-                <div class="fs-2 fw-bold border-bottom border-2">
-                    CERTIFICATION
-                </div>
-                <ul class="mt-2">
-                    <li th:each="cert : ${certifications}" th:text="${cert}"></li>
+            <div th:if="${certifications != null and #lists.size(certifications) > 0}" class="mb-4">
+                <div class="fs-4 text-uppercase fw-bold border-bottom border-2 mb-2">CERTIFICATIONS</div>
+                <ul class="mb-1 ps-3 lh-base">
+                    <li th:each="cert : ${certifications}"><span contenteditable="true" th:text="${cert}"></span></li>
                 </ul>
             </div>
-
-            <div th:if="${skills != null and #lists.size(skills) > 0}">
-                <div class="fs-2 fw-bold border-bottom border-2 mt-4">
-                    SKILLS
-                </div>
-                <ul class="mt-2">
-                    <li th:each="skill : ${skills}" th:text="${skill}"></li>
+            <div th:if="${skills != null and #lists.size(skills) > 0}" class="mb-4">
+                <div class="fs-4 text-uppercase fw-bold border-bottom border-2 mb-2">SKILLS</div>
+                <ul class="mb-2 ps-3 lh-lg">
+                    <li th:each="skill : ${skills}"><span contenteditable="true" th:text="${skill}"></span></li>
                 </ul>
             </div>
         </div>
     </div>
+    </div>
 </div>
+<!-- Download PDF button toolbar (moved outside .a4-page) -->
+<div class="d-flex justify-content-end mb-3 download-toolbar">
+    <button onclick="window.print()" class="btn btn-success">Download PDF</button>
+</div>
+<!-- Toolbar -->
+<div id="editor-toolbar" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+  <button onclick="insertLink()" class="btn btn-primary">Add Link</button>
+</div>
+
+<script>
+document.querySelectorAll('[contenteditable]').forEach(el => {
+    el.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertHTML', false, text);
+    });
+});
+
+function insertLink() {
+    const url = prompt("Enter URL:");
+    if (!url) return;
+
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+
+    if (!selectedText) {
+        alert("Please select the text you want to link.");
+        return;
+    }
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.textContent = selectedText;
+    a.target = "_blank";
+
+    range.deleteContents();
+    range.insertNode(a);
+}
+</script>
 </body>
 </html>
