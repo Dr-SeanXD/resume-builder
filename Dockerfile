@@ -8,7 +8,8 @@ WORKDIR /app
 COPY . .
 
 # Build the JAR
-RUN mvn clean package -DskipTests
+RUN mvn clean
+RUN mvn package
 
 # Now create the actual image
 FROM eclipse-temurin:21-jdk
